@@ -9,23 +9,18 @@ export default function Contact() {
         <>
         <Header />
         <div className="container mx-auto py-12 px-4 md:px-6">
-            <header className="mb-12 text-center">
-                <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Me</h1>
-                <div className="w-24 h-1 bg-blue-500 mx-auto"></div>
-            </header>
-            
             <section className="max-w-3xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-8">
-                    <h2 className="text-2xl font-semibold text-gray-700 mb-6">Get in Touch</h2>
+                
+                    <h2 className="text-2xl font-semibold text-white-700 mb-6 text-center">Get in Touch</h2>
                     
-                    <div className="space-y-6 text-gray-600 leading-relaxed">
+                    <div className="space-y-6 text-white-600 leading-relaxed text-center">
                         <p>
                             I am always open to new opportunities and collaborations. If you have a project in mind, 
                             or just want to say hi, feel free to reach out to me.
                         </p>
                         
-                        <div className="flex items-center space-x-4 mt-4">
-                            <span className="text-sm text-gray-600">Find me on:</span>
+                        <div className="flex items-center space-x-4 mt-4 text-center justify-center">
+                            <span className="text-sm text-white-600">Find me on:</span>
                             <a 
                                 href="https://www.linkedin.com/in/silvestre-fernandez-1aaa0a2a9/" 
                                 target="_blank" 
@@ -45,8 +40,8 @@ export default function Contact() {
                                 <FontAwesomeIcon icon={faInstagram} className="w-6 h-6" />
                             </a>
                             </div>
+                            <p>Alternatively, email me <a href="mailto:silvestrefernandez777@gmail.com" className="hover:text-blue-400">here</a></p>
                     </div>
-                </div>
             </section>
         </div>
         </>
