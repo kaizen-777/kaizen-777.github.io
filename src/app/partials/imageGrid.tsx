@@ -71,7 +71,7 @@ export default function ImageCarousel() {
                             layout
                             initial={false}
                             animate={{ opacity: 1 }}
-                            transition={{
+                            transition={{ 
                                 layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
                                 opacity: { duration: 0.5    }
                             }}
@@ -80,29 +80,29 @@ export default function ImageCarousel() {
                             onHoverEnd={() => setHoveredIndex(null)}
                             className={`relative aspect-square md:aspect-auto overflow-hidden
                                  rounded-lg cursor-pointer border border-gray-200/30 dark:border-gray-700/30 bg-gray-700 ${
-                                isCenterSlide
+                                isCenterSlide 
                                     ? 'md:h-[70vh]'
                                     : 'md:h-[58vh] md:self-center'
                             }`}
                         >
                             <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
-                                    key={`image-${image.originalIndex}`}
-                                    initial={{ opacity: 0 }}
+                            <motion.div
+                                key={`image-${image.originalIndex}`}
+                                initial={{ opacity: 0 }}
                                     animate={{ opacity: loadedImages.has(image.originalIndex) ? 1 : 0 }}
                                     exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                                    className="w-full h-full"
-                                >
-                                    <Image
-                                        src={image.src}
-                                        alt={image.alt}
+                                transition={{ duration: 0.8, ease: "easeInOut" }}
+                                className="w-full h-full"
+                            >
+                                <Image
+                                    src={image.src}
+                                    alt={image.alt}
                                         fill
                                         className="object-cover"
-                                        priority={slideIndex < 3}
+                                    priority={slideIndex < 3}
                                         onLoadingComplete={() => handleImageLoad(image.originalIndex)}
-                                    />
-                                </motion.div>
+                                />
+                            </motion.div>
                             </AnimatePresence>
                             
                             {/* Gradient overlay */}
