@@ -10,9 +10,7 @@ export default function Contact() {
         <Header />
         <div className="container mx-auto py-12 px-4 md:px-6">
             <section className="max-w-3xl mx-auto">
-                
                     <h2 className="text-2xl font-semibold text-white-700 mb-6 text-center">Get in Touch</h2>
-                    
                     <div className="space-y-6 text-white-600 leading-relaxed text-center">
                         <p>
                             I am always open to new opportunities and collaborations. If you have a project in mind, 
