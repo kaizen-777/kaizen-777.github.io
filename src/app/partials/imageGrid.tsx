@@ -3,9 +3,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 // Import images.
-import { shoot1, shoot2, shoot3, shoot4, shoot5, shoot6, shoot7 } from '../images/images';
+import { shoot1, shoot2, shoot3, shoot4, shoot5, shoot6, shoot7, omoide, missionBay, editedPortrait, karekare, plotting } from '../images/images';
 
 interface ImageItem {
     src: any;
@@ -18,18 +19,28 @@ export default function ImageCarousel() {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const [lastManualChange, setLastManualChange] = useState<number>(Date.now());
 
     const handleImageLoad = (index: number) => {
         setLoadedImages(prev => new Set(prev).add(index));
     };
 
+    const handleManualIndexChange = (index: number) => {
+        setCurrentIndex(index);
+        setLastManualChange(Date.now());
+    };
+
     // Portfolio images - all 7 shoots.
     const images: ImageItem[] = [
         { src: shoot1, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
+        { src: omoide, alt: 'Omoide Yakosho - Caught in the moment.', title: 'Omoide Yakosho', category: 'Travel' },
         { src: shoot2, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
+        { src: plotting, alt: 'Plotting - Artistic composition.', title: 'Philosophical', category: 'Art' },
+        { src: missionBay, alt: 'Evisu Outfit at Mission Bay', title: 'Fashion and Scenic', category: 'Portfolio' },
         { src: shoot3, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
-        { src: shoot4, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
-        { src: shoot5, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
+        { src: editedPortrait, alt: 'Portrait - Enhanced beauty.', title: 'Portrait', category: 'Retouching' },
+        { src: shoot4, alt: 'Mission Bay', title: 'Mission Bay', category: 'Portfolio' },
+        { src: karekare, alt: 'Karekare Beach - Scenic view.', title: 'Karekare Beach - Scenic view.', category: 'Travel' },
         { src: shoot6, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
         { src: shoot7, alt: 'Portrait Photo', title: 'Photoshoot', category: 'Portfolio' },
     ];
@@ -44,7 +55,7 @@ export default function ImageCarousel() {
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [hoveredIndex]);
+    }, [hoveredIndex, lastManualChange]);
 
     // Get the 3 visible slides based on current index.
     const getVisibleSlides = () => {
@@ -79,8 +90,9 @@ export default function ImageCarousel() {
                             onHoverStart={() => setHoveredIndex(slideIndex)}
                             onHoverEnd={() => setHoveredIndex(null)}
                             className={`relative aspect-square md:aspect-auto overflow-hidden
-                                 rounded-lg cursor-pointer border border-gray-200/30 dark:border-gray-700/30 bg-gray-700 ${
-                                isCenterSlide 
+                                 rounded-lg cursor-pointer border border-gray-200/30 dark:border-gray-700/30
+                                 bg-white dark:bg-[#0a0a0a] ${
+                                isCenterSlide
                                     ? 'md:h-[70vh]'
                                     : 'md:h-[58vh] md:self-center'
                             }`}
@@ -155,7 +167,7 @@ export default function ImageCarousel() {
                                     {image.title}
                                 </h3>
                                 {isCenterSlide && (
-                                    <p className="text-gray-200">Click to view full gallery</p>
+                                    <Link href="/gallery"><p className="text-gray-200">Click to view full gallery</p></Link>
                                 )}
                             </motion.div>
                         </motion.div>
@@ -168,10 +180,10 @@ export default function ImageCarousel() {
                 {images.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => setCurrentIndex(index)}
+                        onClick={() => handleManualIndexChange(index)}
                         className={`h-2 rounded-full transition-all duration-300 ${
-                            index === currentIndex 
-                                ? 'w-8 bg-gray-800 dark:bg-gray-200' 
+                            index === currentIndex
+                                ? 'w-8 bg-gray-800 dark:bg-gray-200'
                                 : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
                         }`}
                         aria-label={`Go to slide ${index + 1}`}

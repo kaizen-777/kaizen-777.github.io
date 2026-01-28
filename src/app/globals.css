@@ -1,30 +1,34 @@
 @import "tailwindcss";
 
+/* Configure dark mode variant for Tailwind v4 */
+@variant dark (.dark &);
+
+/* Dark mode colour overrides. */
+:root.dark {
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+}
+
+/* CSS variable support. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Dark mode configuration. */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  
+  /* Font families. */
+  --font-sans: Arial, Helvetica, sans-serif;
+  
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #headerStyling {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-background);
+  color: var(--color-foreground);
 }

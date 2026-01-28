@@ -15,13 +15,14 @@ export default function Header() {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
+    { name: "Gallery", path: "/gallery" },
   ];
 
   return (
     <header className={`mx-auto py-6 ${manrope.className}`} id="headerStyling">
       <div className="container mx-auto px-8 flex justify-center items-center border-b border-gray-200/50 dark:border-gray-700/50 pb-6">
         <h1 className="text-4xl font-normal tracking-wide text-black dark:text-white">
-          Silvestre Fernandez
+          Silvestre Esteban Fernández Liñero
         </h1>
       </div>
       <div className="container mx-auto px-8 pt-8">
