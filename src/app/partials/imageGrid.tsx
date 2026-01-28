@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 // Import images.
@@ -20,12 +20,27 @@ export default function ImageCarousel() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
     const [lastManualChange, setLastManualChange] = useState<number>(Date.now());
+    const [direction, setDirection] = useState<number>(1); // 1 for forward, -1 for backward.
+    const previousIndexRef = useRef<number>(0);
 
     const handleImageLoad = (index: number) => {
         setLoadedImages(prev => new Set(prev).add(index));
     };
 
     const handleManualIndexChange = (index: number) => {
+        // Calculate direction based on index change.
+        const total = images.length;
+        const forwardDistance = (index - currentIndex + total) % total;
+        const backwardDistance = (currentIndex - index + total) % total;
+        
+        // Choose the shorter path.
+        if (forwardDistance <= backwardDistance) {
+            setDirection(1);
+        } else {
+            setDirection(-1);
+        }
+        
+        previousIndexRef.current = currentIndex;
         setCurrentIndex(index);
         setLastManualChange(Date.now());
     };
@@ -47,15 +62,17 @@ export default function ImageCarousel() {
 
     // Auto-rotate carousel every 5 seconds, but pause on hover.
     useEffect(() => {
-        // Don't auto-rotate if any image is being hovered
+        // Don't auto-rotate if any image is being hovered.
         if (hoveredIndex !== null) return;
 
         const interval = setInterval(() => {
+            setDirection(1); // Auto-rotation always goes forward.
+            previousIndexRef.current = currentIndex;
             setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [hoveredIndex, lastManualChange]);
+    }, [hoveredIndex, lastManualChange, currentIndex, images.length]);
 
     // Get the 3 visible slides based on current index.
     const getVisibleSlides = () => {
@@ -69,22 +86,52 @@ export default function ImageCarousel() {
 
     const visibleSlides = getVisibleSlides();
 
+    // Animation variants based on direction.
+    const slideVariants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? '100%' : '-100%',
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => ({
+            x: direction > 0 ? '-100%' : '100%',
+            opacity: 0,
+        }),
+    };
+
     return (
         <div className="w-[95%] md:w-[90%] mx-auto py-8">
             {/* Carousel with 3 visible slides */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 min-h-[70vh]">
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 min-h-[70vh] overflow-hidden">
+                <AnimatePresence initial={false} mode="popLayout" custom={direction}>
                 {visibleSlides.map((image, slideIndex) => {
                     const isCenterSlide = slideIndex === 1;
-                    
+
                     return (
                         <motion.div
-                            key={`slide-${slideIndex}`}
-                            layout
-                            initial={false}
-                            animate={{ opacity: 1 }}
-                            transition={{ 
-                                layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-                                opacity: { duration: 0.5    }
+                            key={`image-${image.originalIndex}`}
+                            custom={direction}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{
+                                x: { 
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 30,
+                                    mass: 0.8
+                                },
+                                opacity: { duration: 0.4 },
+                                layout: { 
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 30,
+                                    mass: 0.8
+                                }
                             }}
                             whileHover={{ scale: isCenterSlide ? 1.02 : 1.05 }}
                             onHoverStart={() => setHoveredIndex(slideIndex)}
@@ -97,25 +144,21 @@ export default function ImageCarousel() {
                                     : 'md:h-[58vh] md:self-center'
                             }`}
                         >
-                            <AnimatePresence mode="wait" initial={false}>
                             <motion.div
-                                key={`image-${image.originalIndex}`}
                                 initial={{ opacity: 0 }}
-                                    animate={{ opacity: loadedImages.has(image.originalIndex) ? 1 : 0 }}
-                                    exit={{ opacity: 0 }}
-                                transition={{ duration: 0.8, ease: "easeInOut" }}
+                                animate={{ opacity: loadedImages.has(image.originalIndex) ? 1 : 0 }}
+                                transition={{ duration: 0.3 }}
                                 className="w-full h-full"
                             >
                                 <Image
                                     src={image.src}
                                     alt={image.alt}
-                                        fill
-                                        className="object-cover"
+                                    fill
+                                    className="object-cover"
                                     priority={slideIndex < 3}
-                                        onLoadingComplete={() => handleImageLoad(image.originalIndex)}
+                                    onLoad={() => handleImageLoad(image.originalIndex)}
                                 />
                             </motion.div>
-                            </AnimatePresence>
                             
                             {/* Gradient overlay */}
                             <motion.div
@@ -173,6 +216,7 @@ export default function ImageCarousel() {
                         </motion.div>
                     );
                 })}
+                </AnimatePresence>
             </div>
 
             {/* Carousel indicators */}
