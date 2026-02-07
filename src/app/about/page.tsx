@@ -6,12 +6,12 @@ import { motion } from "framer-motion";
 export default function About() {
     const specs = [
         { label: "Height", value: "191cm" },
-        { label: "Weight", value: "80kg" },
+        { label: "Weight", value: "84kg" },
         { label: "Shoe", value: "EUR 44" },
         { label: "Shirt", value: "M" },
         { label: "Waist", value: "32" },
         { label: "Eyes", value: "Hazel" },
-        { label: "Hair", value: "Blonde" },
+        { label: "Hair", value: "Brown" },
     ];
 
     const containerVariants = {
